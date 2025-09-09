@@ -1,0 +1,129 @@
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+
+using namespace std;
+
+int main() {
+    srand (time(0));
+    int criticalHitChance = 10; // 10% chance for a critical hit
+    string enemyType [] = {
+        "Cowrat", "Meowl", "TungTung", "Rice Man", "Awawa"
+    };
+
+    string enemy = enemyType[rand() % 5];
+    int enemyHP = 50; // Set enemy HP
+    int playerHP = 60; // Set player HP
+
+    cout << "A wild " << enemy << " charges forward!" << endl;
+
+    // Result messages
+    string resultsCrit[] = {
+        "The enemy staggers back in pain!",
+        "It’s super effective!",
+        "The enemy is critically wounded!",
+        "The enemy screams in agony!",
+        "The attack lands with a loud *SMASH*!"
+    };
+    string resultsNorm[] = {
+        "The enemy shrugs off the attack.",
+        "Tis' but a scratch!",
+        "The attack barely scratches the enemy.",
+        "The enemy laughs at your feeble attempt.",
+        "The attack lands with a soft *thud*."
+    };
+
+    while (enemyHP > 0 && playerHP > 0) {
+        cout << "\nChoose an attack!" << endl;
+        cout << "1: Sword Slash! " << "2: Fireball!" << endl;
+        cout << "3: Arrow Shot! " << "4: Thunderbolt!" << endl;
+        int choice;
+        cin >> choice;
+
+        string attackName;
+        int baseDamage = 0;
+        int accuracy = 0; 
+        int damage = 0;
+        bool criticalAttack = false;
+        bool normalAttack = false;
+
+        switch (choice) {
+            case 1: attackName = "Sword Slash"; baseDamage = 10; accuracy = 90; break;
+            case 2: attackName = "Fireball";  baseDamage = 12; accuracy = 75; break;
+            case 3: attackName = "Arrow Shot"; baseDamage = 8; accuracy = 95; break;
+            case 4: attackName = "Thunderbolt"; baseDamage = 15; accuracy = 70; break;
+        }
+        if (attackName.empty()) {
+            cout << "Invalid choice!" << endl;
+            switch (rand() % 4 + 1) {
+                case 1: attackName = "Sword Slash"; baseDamage = 10; accuracy = 90; break;
+                case 2: attackName = "Fireball";  baseDamage = 12; accuracy = 75; break;
+                case 3: attackName = "Arrow Shot"; baseDamage = 8; accuracy = 95; break;
+                case 4: attackName = "Thunderbolt"; baseDamage = 15; accuracy = 70; break;
+            }
+            cout << "You randomly perform " << attackName << "!" << endl;
+        } else {
+            cout << "You chose " << attackName << "!" << endl;
+        }
+
+        bool missed = false;
+        if (rand() % 100 + 1 > accuracy) {
+            cout << "But it missed!" << endl;
+            missed = true;
+        }
+
+        if (!missed) {
+            int roll = rand() % 100 + 1; // Roll a number between 1 and 100
+
+            if (roll <= criticalHitChance) {
+                criticalAttack = true;
+                cout << "Critical hit! " << resultsCrit[rand() % 5] << endl;
+                damage = baseDamage * 2;
+            } else {
+                normalAttack = true;
+                cout << "Regular hit. " << resultsNorm[rand() % 5] << endl;
+                damage = baseDamage;
+            }
+
+            cout << "You dealt " << damage << " damage." << endl;
+            enemyHP -= damage;
+
+            if (enemyHP <= 0) {
+                cout << enemy << " has been defeated!" << endl;
+                break;
+            } else {
+                cout << enemy << " HP remaining: " << enemyHP << endl;
+                cout << enemy << " fights on!" << endl;
+            }
+        }
+        
+        string tookDamageMessages[] = {
+            "Ouch!", 
+            "Get up!", 
+            "Is that all you got?", 
+            "Mother$#%&*@!", 
+            "You hit like a girl!"
+        };
+        string gameOverMessages[] = {
+            "It's so dark...",
+            "You call for help, but no one came.",
+            "Really? to a " + enemy + "?", 
+            "You should have stayed home.", 
+            "Maybe next time."
+        };
+
+        // Enemy attacks every turn
+        int enemyDamage = rand() % 11 + 5; // Enemy deals 5-15 damage
+        cout << enemy << " attacks you and deals " << enemyDamage << " damage!" << endl;
+        playerHP -= enemyDamage;
+        cout << tookDamageMessages[rand() % 5] << endl;
+        if (playerHP <= 0) {
+            cout << "You have been defeated!" << endl;
+            cout << gameOverMessages[rand() % 5] << endl;
+            break;
+        } else {
+            cout << "Your HP remaining: " << playerHP << endl;
+        }
+    }
+    return 0;
+    }
